@@ -1,5 +1,5 @@
 #!/bin/sh
-sudo apt install python3 python3-pip setserial bluez libbluetooth-dev python3-dev
+sudo apt install python3 python3-pip setserial bluez libbluetooth-dev python3-dev bluetooth
 pip install pyserial python-escpos
 pip install git+https://github.com/pybluez/pybluez.git#egg=pybluez
 sudo mkdir -pv /opt/myristra
