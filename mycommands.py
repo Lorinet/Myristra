@@ -1,6 +1,9 @@
 import myio
 from myhelper import str_to_int
 
+def flush(dev):
+    myio.flush(dev)
+
 def print_line(dev, text):
     myio.send_params([text, 0x0A], dev)
 
