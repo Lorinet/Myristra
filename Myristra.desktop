@@ -1,4 +1,6 @@
 [Desktop Entry]
+Encoding=utf-8
+Type=Application
 Name=Myristra Print Server
 Exec=/opt/myristra/myristra.py
 Terminal=false
