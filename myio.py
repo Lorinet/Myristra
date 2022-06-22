@@ -41,7 +41,7 @@ def recv_byte():
 def send_params(dat, i):
     for d in dat:
         if isinstance(d, str):
-            send_data(bytes(d, "utf-8"), i)
+            send_data(bytes(d, "ascii"), i)
         else:
             send_data([d], i)
 
