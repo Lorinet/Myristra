@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=Myristra Print Server
+Exec=/opt/myristra/myristra.py
+Terminal=false
