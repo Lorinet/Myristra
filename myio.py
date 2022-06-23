@@ -4,9 +4,18 @@ import bluetooth
 import time
 import datetime
 import myconfig
+import subprocess
 from myhelper import delay, debug_print_hex_array
 
 sock = []
+
+def is_open():
+    op = True
+    for d in myconfig.devices:
+        stdoutdata = subprocess.getoutput("hcitool con")
+        if d not in stdoutdata.split():
+            op = False
+    return op
 
 def open_devices():
     global dp

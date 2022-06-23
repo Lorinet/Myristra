@@ -11,6 +11,9 @@ class MyristraServer(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
+        print(myio.is_open())
+        if not myio.is_open():
+            myio.open_devices()
         self.wfile.write(bytes("<html><head><title>Myristra Print Server</title></head><body>", "utf-8"))
         params = re.split(r'(?<!\\)/', self.path)[1:]
         for i in range(len(params)):
