@@ -7,52 +7,60 @@ import myconfig
 import subprocess
 from myhelper import delay, debug_print_hex_array
 
-sock = []
+sock = None
+curdev = -1
 
 def is_open():
-    op = True
-    for d in myconfig.devices:
-        stdoutdata = subprocess.getoutput("hcitool con")
-        if d not in stdoutdata.split():
-            op = False
-    return op
+    global curdev
+    global sock
+    if curdev == -1:
+        return False
+    stdoutdata = subprocess.getoutput("hcitool con")
+    if myconfig.devices[curdev] not in stdoutdata.split():
+        return False
+    return True
 
-def open_devices():
-    global dp
+def open_device(dev):
+    global curdev
+    global sock
+    if is_open() and curdev == dev:
+        return
+    if curdev != -1:
+        close_device()
     print("Connecting to Bluetooth printers...")
-    for d in myconfig.devices:
-        print("MAC Address: " + d)
-        sock.append(bluetooth.BluetoothSocket(bluetooth.RFCOMM))
-        serv = bluetooth.find_service(address=d)
-        port = 1
-        for s in serv:
-            if s['host'] == d and s['protocol'] == 'RFCOMM':
-                port = s['port']
-        print("Connecting...")
-        sock[-1].connect((d, port))
-        flush(len(sock) - 1)
-        print("Connected")
+    curdev = dev
+    d = myconfig.devices[curdev]
+    print("MAC Address: " + d)
+    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    serv = bluetooth.find_service(address=d)
+    port = 1
+    for s in serv:
+        if s['host'] == d and s['protocol'] == 'RFCOMM':
+            port = s['port']
+    print("Connecting...")
+    sock.connect((d, port))
+    flush()
+    print("Connected")
 
-def close_devices():
-    for i in range(len(sock)):
-        sock[i].close()
+def close_device():
+    sock.close()
 
-def send_data(dat, i):
+def send_data(dat):
     global dp
     print("Sending data...")
     debug_print_hex_array(dat)
-    sock[i].send(bytes(dat))
+    sock.send(bytes(dat))
 
 def recv_byte():
     global dp
     return dp.read(1)[0]
 
-def send_params(dat, i):
+def send_params(dat):
     for d in dat:
         if isinstance(d, str):
-            send_data(bytes(d, "ascii"), i)
+            send_data(bytes(d, "ascii"))
         else:
-            send_data([d], i)
+            send_data([d])
 
-def flush(i):
-    send_data([0x1B, 0x40], i)
+def flush():
+    send_data([0x1B, 0x40])

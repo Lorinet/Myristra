@@ -1,15 +1,15 @@
 import myio
 from myhelper import str_to_int
 
-def flush(dev):
-    myio.flush(dev)
+def flush():
+    myio.flush()
 
-def print_line(dev, text):
-    myio.send_params([text, 0x0A], dev)
+def print_line(text):
+    myio.send_params([text, 0x0A])
 
-def set_font(dev, size):
-    myio.send_data([0x1B, 0x21, int(size)], dev)
+def set_font(size):
+    myio.send_data([0x1B, 0x21, int(size)])
 
-def set_size(dev, size):
+def set_size(size):
     s = (2 << 3) * (int(size) - 1) + (int(size) - 1)
-    myio.send_data([0x1D, 0x21, int(s)], dev)
+    myio.send_data([0x1D, 0x21, int(s)])
