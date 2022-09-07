@@ -1,2 +1,3 @@
 /__pycache__/
-install_remote.sh
+install_remote_toscana.sh
+install_remote_dordebun.sh
