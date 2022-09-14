@@ -1,0 +1,12 @@
+[Unit]
+Description=Myristra Print Server
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/myristra/
+ExecStart=/usr/bin/python3 /opt/myristra/myristra.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

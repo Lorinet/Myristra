@@ -1,6 +1,7 @@
 import os
+from re import S
 import sys
-import bluetooth
+import socket
 import time
 import datetime
 import myconfig
@@ -9,6 +10,7 @@ from myhelper import delay, debug_print_hex_array
 
 sock = None
 curdev = -1
+port = 1
 
 def is_open():
     global curdev
@@ -23,6 +25,7 @@ def is_open():
 def open_device(dev):
     global curdev
     global sock
+    global port
     if is_open() and curdev == dev:
         return
     if curdev != -1:
@@ -31,12 +34,7 @@ def open_device(dev):
     curdev = dev
     d = myconfig.devices[curdev]
     print("MAC Address: " + d)
-    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    serv = bluetooth.find_service(address=d)
-    port = 1
-    for s in serv:
-        if s['host'] == d and s['protocol'] == 'RFCOMM':
-            port = s['port']
+    sock = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
     print("Connecting...")
     sock.connect((d, port))
     flush()
@@ -50,6 +48,7 @@ def send_data(dat):
     print("Sending data...")
     debug_print_hex_array(dat)
     sock.send(bytes(dat))
+    time.sleep(0.1)
 
 def recv_byte():
     global dp

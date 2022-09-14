@@ -5,7 +5,7 @@ import myio
 import mycommands
 import myserver
 
-print("Myristra 0.1 fehu - Open-source ESC/POS Driver and Print Server")
+print("Myristra 0.2 fehu - Open-source ESC/POS Driver and Print Server")
 print("---------------------------------------------------------------")
 
 if __name__ == "__main__":
