@@ -6,4 +6,5 @@ sudo cp * /opt/myristra
 sudo chown -R nobody /opt/myristra
 cp Myristra.desktop $HOME/Desktop
 sudo cp Myristra.desktop /usr/share/applications
-cp Myristra.desktop $HOME/.config/autostart
+#cp Myristra.desktop $HOME/.config/autostart
+sudo cp myristra.service /etc/systemd/system
