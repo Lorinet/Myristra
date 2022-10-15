@@ -11,6 +11,7 @@ from myhelper import delay, debug_print_hex_array
 sock = None
 curdev = -1
 port = 1
+command_buffers = {}
 
 def is_open():
     global curdev
@@ -37,29 +38,38 @@ def open_device(dev):
     sock = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
     print("Connecting...")
     sock.connect((d, port))
-    flush()
+    flush(dev)
     print("Connected")
 
 def close_device():
     sock.close()
 
-def send_data(dat):
-    global dp
+def send_data(dev, dat):
+    global command_buffers;
     print("Sending data...")
     debug_print_hex_array(dat)
-    sock.send(bytes(dat))
-    time.sleep(0.1)
+    if not dev in command_buffers.keys():
+        command_buffers[dev] = []
+    command_buffers[dev] += dat;
 
-def recv_byte():
-    global dp
-    return dp.read(1)[0]
-
-def send_params(dat):
+def send_params(dev, dat):
     for d in dat:
         if isinstance(d, str):
-            send_data(bytes(d, "ascii"))
+            send_data(dev, bytes(d, "ascii"))
         else:
-            send_data([d])
+            send_data(dev, [d])
 
-def flush():
-    send_data([0x1B, 0x40])
+def flush(dev):
+    global sock;
+    global command_buffers;
+    if dev not in command_buffers.keys():
+        command_buffers[dev] = []
+        print("added")
+    command_buffers[dev] += [0x1B, 0x40];
+    open_device(int(dev))
+    if dev not in command_buffers.keys():
+        return
+    sock.send(bytes(command_buffers[dev]))
+    del command_buffers[dev];
+    sock.shutdown(socket.SHUT_RDWR)
+    sock.close()

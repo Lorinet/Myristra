@@ -17,13 +17,13 @@ class MyristraServer(BaseHTTPRequestHandler):
             params[i] = params[i].replace("\\/", "/").replace("&nbsp;", " ").replace("&lsquo;", "'").replace("&ldquo;", "\"").replace("%20", " ")
         if params[0] == 'favicon.ico':
             return
-        myio.open_device(int(params[0]))
         try:
-            getattr(mycommands, params[1])(*params[2:])
+            getattr(mycommands, params[1])(int(params[0]), *params[2:])
             self.wfile.write(bytes("Command executed", "utf-8"))
         except IndexError:
             self.wfile.write(bytes("Cannot communicate with device", "utf-8"))
-        except AttributeError:
+        except AttributeError as ae:
+            print(ae)
             self.wfile.write(bytes("Invalid command: " + str(params), "utf-8"))
             pass
         self.wfile.write(bytes("</body></html>", "utf-8"))
